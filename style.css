@@ -2,3 +2,7 @@ body {
     margin: 20px auto;
     max-width: 1200px;
 }
+
+body, table, button, input, select, textarea {
+    font-size: 18px;
+}

@@ -1,2 +1,2 @@
-# angularjs-datatables
-Simple, lightweight wrapper for interacting with data via AngularJS as a datatable
+# AngularJS Datatables [WIP]
+A simple, lightweight wrapper for interacting with data via AngularJS as a datatable.
