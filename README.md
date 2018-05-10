@@ -3,16 +3,16 @@ A simple, lightweight wrapper for interacting with data via AngularJS as a datat
 
 ## Features
 ### Current
-* Virtual pagination, allowing for rows to only be rendered as they are needed. This allows for tables of even 100,000 rows ([see the demo](https://ephemerant.github.io/angularjs-datatables/)) to be quick to load.
-* Search by data value, rather than row value, allowing for more in-depth searches while also only showing relevant values in a row.
+* **Virtual pagination**, allowing for rows to only be rendered as they are needed. This allows for tables of even 100,000 rows ([see the demo](https://ephemerant.github.io/angularjs-datatables/)) to be quick to load.
+* **Search by data value**, rather than row value, allowing for more in-depth searches while also only showing relevant values in a row.
 
 ### Planned
-* Sorting, with built-in support for dates, currency, etc.
-* Custom filters, such as being able to filter rows based on a date range for a certain column.
+* **Sorting**, with built-in support for dates, currency, etc.
+* **Custom filters**, such as being able to filter rows based on a date range for a certain column.
 
 ## Overview
 Given an array of data objects in your controller's scope (called "names" in this example), you can render the data as a table by doing the following:
-* Add **ng-rows="names"** to the table
+* Add **ng-rows="names"** to the **\<table/\>**
 * Add **ng-row** to a **\<tr/\>** template that you want to use to render each data object
 * Specify the object values to display in the **\<td/\>** tags of the template
 
