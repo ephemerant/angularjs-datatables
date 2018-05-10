@@ -12,9 +12,9 @@ A simple, lightweight wrapper for interacting with data via AngularJS as a datat
 
 ## Overview
 Given an array of data objects in your controller's scope (called "names" in this example), you can render the data as a table by doing the following:
-* Add **ng-rows="names"** to the **\<table/\>**
-* Add **ng-row** to a **\<tr/\>** template that you want to use to render each data object
-* Specify the object values to display in the **\<td/\>** tags of the template
+* Add **ng-rows="names"** to the **\<table/\>**.
+* Add **ng-row** to a **\<tr/\>** template that you want to use to render each data object.
+* Specify the object values to display in the **\<td/\>** tags of the template.
 
 ### Example
 ```html
