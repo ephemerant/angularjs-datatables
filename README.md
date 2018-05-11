@@ -25,8 +25,8 @@ Given an array of data objects in your controller's scope (called "names" in thi
         <thead>
             <tr>
                 <th>ID</th>
-                <th>First Name</th>
-                <th>Last Name</th>
+                <th ng-sortable>First Name</th>
+                <th ng-sortable>Last Name</th>
             </tr>
         </thead>
         <tbody>
