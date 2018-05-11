@@ -15,12 +15,17 @@ angular.module('ngRows', [])
               return Math.ceil(vm.filteredRows.length / vm.pages.size);
             },
             search: '',
-            oldSearch: ''
+            oldSearch: '',
+            headers: {}
           };
 
           vm.pages.size = vm.pages.sizes[0];
 
-          vm.setPage = function(page) {
+          // Sets the current page within the table and prevents any click side effects from occurring
+          vm.setPage = function(page, $event) {
+            if ($event) $event.preventDefault();
+
+            // Keep page within range
             if (page > 0 && page <= vm.pages.totalPages())
               vm.pages.current = page;
           };
@@ -52,16 +57,18 @@ angular.module('ngRows', [])
             return rows.slice(start, end);
           };
 
-          vm.filterRows = function() {
+          // Filter the rows based on the search query
+          vm.filterRows = function(newSort) {
             if (vm.pages.search) {
               // Start with the filtered rows if the search is a subset of the previous search (e.g., we're typing)
-              var rows = vm.pages.search.indexOf(vm.pages.oldSearch) !== -1 ? vm.filteredRows : vm.ngRows;
+              var rows = (!newSort && vm.pages.search.indexOf(vm.pages.oldSearch) !== -1) ? vm.filteredRows : vm.sortedRows;
 
               // Filter rows by the search query
               vm.filteredRows = rows.filter(function(row) {
                 if (vm.pages.search) {
-                  var toSearch = Object.values(row).map(function(x) {
-                    return x && x.toString().toLowerCase();
+                  var toSearch = Object.keys(row).map(function(key) {
+                    var value = row[key];
+                    return value && value.toString().toLowerCase();
                   });
                   var match = true;
 
@@ -76,47 +83,99 @@ angular.module('ngRows', [])
                   return true;
               });                          
             } else {
-              vm.filteredRows = vm.ngRows;
+              vm.filteredRows = vm.sortedRows;
             }
 
             vm.pages.oldSearch = vm.pages.search;
             vm.pages.current = 1;
           };
 
+          // Specify the column sorting properties
+          vm.sortCol = function(i) {
+            var col = vm.pages.headers[i];
+
+            if (!col.order)
+              col.order = 1;
+            else if (col.order === 1)
+              col.order = -1;
+            else
+              col.order = 0;
+
+            vm.pages.sorting = col.order ? col : null;
+
+            // Reset other columns
+            Object.keys(vm.pages.headers).forEach(function(key) {
+              var header = vm.pages.headers[key];
+
+              if (header !== col)
+                header.order = 0;
+            });
+
+            // Sort the actual rows
+            sortRows();
+          };
+
+          // Sort the rows based off of the selected column header's sort order
+          function sortRows() {
+            var col = vm.pages.sorting;
+
+            if (col && col.order) {
+              vm.sortedRows = vm.ngRows.slice().sort(function(a, b) {
+                if (col.order === 1) // Ascending
+                  if (a[col.key] > b[col.key])
+                    return 1;
+                  else if (a[col.key] < b[col.key])
+                    return -1;
+                  else
+                    return 0;
+                else // Descending
+                  if (a[col.key] < b[col.key])
+                    return 1;
+                  else if (a[col.key] > b[col.key])
+                    return -1;
+                  else
+                    return 0;
+              });
+            }
+            else
+              vm.sortedRows = vm.ngRows;
+
+            vm.filterRows(true);
+          }
+
           // e.g. 1000 -> 1,000
-          vm.toCommaString = function(n) {
+          vm.commaString = function(n) {
             return n.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
           };
 
           // Watchers
           vm.$watch('ngRows', function() {
-            vm.filteredRows = vm.ngRows;
-            vm.filterRows();
+            sortRows();
           });
         },
         compile: function(row) {
-          var html = row.html();
-          row.html('');
+          var $ = angular.element;
 
           // Use a non-jQlite implemention of find() in order to search for tags and classes
           function find(_this, query) {
-            if (!query) return angular.element();
+            if (!query) return $();
           
             var ret = [];
           
             angular.forEach(_this, function(el) {
-                if (el.querySelectorAll)
-                  el.querySelectorAll(query).forEach(function(item) {
-                    ret.push(item);
-                  });
+              if (el.querySelectorAll) {
+                angular.forEach(el.querySelectorAll(query), function(item) {
+                  ret.push(item);
+                });
+              }
             });
           
-            return angular.element(ret);
+            return $(ret);
           }
           
           // Inserts an item before an element
           function insertBefore(_this, element) {
-            if (!element) return angular.element();
+            if (!element) return $();
           
             angular.forEach(_this, function(el) {
               element.parent()[0].insertBefore(el, element[0]); // Use native method
@@ -125,13 +184,39 @@ angular.module('ngRows', [])
             return _this;
           };
 
+          // Add all of the datatable goodies to the table
           return function(vm, parent) {
-            var $contents = angular.element(html);
+            // Grab and clear the table's HTML to re-inject later
+            var $contents = $(row.html());
+            row.html('');            
 
             // Repeat rows
-            var $row = find($contents, 'tr[ng-row]');
+            var $dataRow = find($contents, 'tr[ng-row]');
+            $dataRow.attr('ng-repeat', 'row in getPageRows(filteredRows) track by $index');
 
-            $row.attr('ng-repeat', 'row in getPageRows(filteredRows) track by $index');
+            // Sortable columns
+            var $headerCols = find($contents, 'thead tr th');
+            var $dataCols = find($dataRow, 'td');
+
+            angular.forEach($headerCols, function(el, i) {
+              var $th = $(el);              
+              var sortable = $th.attr('ng-sortable') !== undefined;
+
+              if (sortable) {
+                var td = $dataCols[i];
+                // Determine if a data key is being used
+                var match = /{{row\.(.*?)}}/.exec(td.innerText);
+
+                if (match) {
+                  var key = match[1];
+                  $th.attr('ng-class', '{ sorting: pages.headers[' + i + '].order === 0, ' +
+                                         'sorting_asc: pages.headers[' + i + '].order === 1, ' +
+                                         'sorting_desc: pages.headers[' + i + '].order === -1 }');
+                  $th.attr('ng-click', 'sortCol(' + i + ')');
+                  vm.pages.headers[i] = { order: 0, key: key };
+                }
+              }
+            });
 
             $compile($contents)(vm);
             parent.append($contents);
@@ -150,13 +235,14 @@ angular.module('ngRows', [])
                 search + '</label></div></div></div>';
 
             var pageInfo =
-                'Showing {{Math.min(filteredRows.length, (pages.current - 1) * +pages.size + 1)}} to {{Math.min(pages.current * +pages.size, filteredRows.length)}} of {{toCommaString(filteredRows.length)}} entries';
+                'Showing {{commaString(Math.min(filteredRows.length, (pages.current - 1) * +pages.size + 1))}} to ' +
+                '{{commaString(Math.min(pages.current * +pages.size, filteredRows.length))}} of {{commaString(filteredRows.length)}} entries';
             var pagination =
-                '<li class="paginate_button page-item previous"><a href="#" tabindex="0" class="page-link" ng-click="setPage(pages.current - 1)">Previous</a></li>' +
+                '<li class="paginate_button page-item previous"><a href="#" tabindex="0" class="page-link" ng-click="setPage(pages.current - 1, $event)">Previous</a></li>' +
                 '<li class="paginate_button page-item" ng-class="{ active: page === pages.current }" ng-repeat="page in generatePages(pages.current, pages.totalPages()) track by $index">' + 
-                  '<a href="#" tabindex="0" class="page-link" ng-click="setPage(page)">{{page || "&#8230;"}}</a>' +
+                  '<a href="#" tabindex="0" class="page-link" ng-click="setPage(page, $event)">{{(page && commaString(page)) || "&#8230;"}}</a>' +
                 '</li>' +
-                '<li class="paginate_button page-item next"><a href="#" tabindex="0" class="page-link" ng-click="setPage(pages.current + 1)">Next</a></li>';
+                '<li class="paginate_button page-item next"><a href="#" tabindex="0" class="page-link" ng-click="setPage(pages.current + 1, $event)">Next</a></li>';
             var bottomControls =
                 '<div class="row"><div class="col-sm-12 col-md-5"><div class="dataTables_info">' +
                   pageInfo +
@@ -166,7 +252,7 @@ angular.module('ngRows', [])
                 '</ul></div></div></div></div>';
 
             // Wrap everything together
-            var $wrapper = angular.element(
+            var $wrapper = $(
                 '<div class="dataTables_wrapper container-fluid">' +
                   topControls +
                   '<div class="row"><div class="col-sm-12 inject-table"></div></div>' +
