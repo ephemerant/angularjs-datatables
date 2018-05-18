@@ -2,11 +2,12 @@ angular.module('ngRows', [])
     .directive('ngRows', function($compile) {
       return {
         restrict: 'A',
-        scope: {ngRows: '<'},
+        scope: {ngRows: '<', ngSelected: '='},
         controller: function($scope) {
           var vm = $scope;
 
           vm.Math = Math;
+          vm.selected = vm.ngSelected;
 
           vm.pages = {
             current: 1,
@@ -20,6 +21,43 @@ angular.module('ngRows', [])
           };
 
           vm.pages.size = vm.pages.sizes[0];
+
+          // Row selection
+          vm.toggleSelect = function(row) {
+            if (!vm.isSelected(row))
+              vm.selected.add(row);
+            else
+              vm.selected.delete(row);
+          };
+
+          vm.isSelected= function(row) {
+            return vm.selected.has(row);
+          };
+
+          vm.allSelected = function(rows) {
+            var adds = 0;
+
+            // See if anything isn't selected
+            rows.forEach(function(row) {
+              adds += !vm.selected.has(row);
+            });
+
+            return !adds;
+          };
+
+          vm.toggleSelectAll = function(rows) {
+            var adds = 0;
+
+            // Select all
+            rows.forEach(function(row) {
+              adds += !vm.selected.has(row);
+              vm.selected.add(row);
+            });
+
+            // Deselect all
+            if (!adds)
+              vm.selected.clear();
+          }
 
           // Sets the current page within the table and prevents any click side effects from occurring
           vm.setPage = function(page, $event) {
@@ -191,11 +229,21 @@ angular.module('ngRows', [])
             row.html('');            
 
             // Repeat rows
+            var $headerRow = find($contents, 'thead tr');
             var $dataRow = find($contents, 'tr[ng-row]');
             $dataRow.attr('ng-repeat', 'row in getPageRows(filteredRows) track by $index');
 
+            // Do we want the row to be selectable?
+            if ($dataRow.attr('ng-selectable') === '') {
+              $dataRow
+                .prepend('<td ng-selectable ng-click="toggleSelect(row)""></td>')
+                .attr('ng-selectable', null)
+                .attr('ng-class', '{ selected: isSelected(row) }');
+              $headerRow.prepend('<td ng-selectable ng-click="toggleSelectAll(filteredRows)" ng-class="{ selected: allSelected(filteredRows) }"></td>');
+            }
+
             // Sortable columns
-            var $headerCols = find($contents, 'thead tr th');
+            var $headerCols = find($headerRow, 'th');
             var $dataCols = find($dataRow, 'td');
 
             angular.forEach($headerCols, function(el, i) {

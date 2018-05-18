@@ -1,0 +1,30 @@
+/* Optional stylesheet for selectable rows */
+td[ng-selectable] {
+    cursor: pointer;
+    width: 25px;
+    padding: 8px !important;
+}
+td[ng-selectable]:after {
+    content: '';
+    display: block;
+    width: 25px;
+    height: 25px;
+    background: #eee;
+}
+td[ng-selectable]:hover:after {
+    background: #ccc;
+}
+tr.selected td[ng-selectable]:after, td.selected[ng-selectable]:after {
+    content: '\2713'; /* unicode checkmark */
+    color: white;
+    text-align: center;
+    font-weight: bold;
+    display: block;
+    width: 25px;
+    height: 25px;
+    background: #2196F3;
+}
+tr.selected td {
+    background: #337ab7;
+    color: white;
+}

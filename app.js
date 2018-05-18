@@ -21,6 +21,21 @@ app.controller('main', function($scope) {
       firstName: firstNames.randomElement(),
       lastName: lastNames.randomElement()
     });
+
+  // (Optional) Create a selection Set for rows that can be processed by both this app and ngRows
+  vm.selected = new Set();
+
+  vm.deleteSelected = function() {
+    vm.names = vm.names.filter(function(x) {
+      return !vm.selected.has(x);
+    });
+    
+    vm.deselectAll();
+  };
+
+  vm.deselectAll = function() {
+    vm.selected.clear();
+  }
 });
 
 Array.prototype.randomElement = function() {
