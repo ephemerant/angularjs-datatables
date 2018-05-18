@@ -18,6 +18,10 @@ Given an array of data objects in your controller's scope (called "names" in thi
 * Specify the object values to display in the **\<td/\>** tags of the template.
 * If you would like to sort any column, add **ng-sortable** to the desired **\<th/\>** tags of your **\<thead/\>**.
 
+Optionally, you can make rows selectable by doing the following:
+* Create an empty Set in your controllers's scope (called "selectable" in this example).
+* Add **ng-selectable="selectable"** to the **\<table/\>**.
+
 ### Example
 ```html
 <body ng-app="app" ng-controller="main">

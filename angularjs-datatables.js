@@ -258,12 +258,12 @@ angular.module('ngRows', [])
             });
 
             // Do we want the row to be selectable?
-            if ($dataRow.attr('ng-selectable') === '') {
+            if (parent.attr('ng-selected') !== undefined) {
               $dataRow
                 .prepend('<td ng-selectable ng-click="toggleSelect(row)""></td>')
                 .attr('ng-selectable', null)
                 .attr('ng-class', '{ selected: isSelected(row) }');
-              $headerRow.prepend('<td ng-selectable ng-click="toggleSelectAll(filteredRows)" ng-class="{ selected: allSelected(filteredRows) }"></td>');
+              $headerRow.prepend('<td ng-selectable ng-click="toggleSelectAll(filteredRows)" ng-class="{ selected: filteredRows.length && allSelected(filteredRows) }"></td>');
             }
 
             $compile($contents)(vm);
