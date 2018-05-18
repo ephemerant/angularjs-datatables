@@ -233,15 +233,6 @@ angular.module('ngRows', [])
             var $dataRow = find($contents, 'tr[ng-row]');
             $dataRow.attr('ng-repeat', 'row in getPageRows(filteredRows) track by $index');
 
-            // Do we want the row to be selectable?
-            if ($dataRow.attr('ng-selectable') === '') {
-              $dataRow
-                .prepend('<td ng-selectable ng-click="toggleSelect(row)""></td>')
-                .attr('ng-selectable', null)
-                .attr('ng-class', '{ selected: isSelected(row) }');
-              $headerRow.prepend('<td ng-selectable ng-click="toggleSelectAll(filteredRows)" ng-class="{ selected: allSelected(filteredRows) }"></td>');
-            }
-
             // Sortable columns
             var $headerCols = find($headerRow, 'th');
             var $dataCols = find($dataRow, 'td');
@@ -265,6 +256,15 @@ angular.module('ngRows', [])
                 }
               }
             });
+
+            // Do we want the row to be selectable?
+            if ($dataRow.attr('ng-selectable') === '') {
+              $dataRow
+                .prepend('<td ng-selectable ng-click="toggleSelect(row)""></td>')
+                .attr('ng-selectable', null)
+                .attr('ng-class', '{ selected: isSelected(row) }');
+              $headerRow.prepend('<td ng-selectable ng-click="toggleSelectAll(filteredRows)" ng-class="{ selected: allSelected(filteredRows) }"></td>');
+            }
 
             $compile($contents)(vm);
             parent.append($contents);
