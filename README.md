@@ -6,6 +6,7 @@ A simple, lightweight wrapper for interacting with data via AngularJS as a datat
 * **Virtual pagination**, allowing for rows to only be rendered as they are needed. This allows for tables of even 100,000 rows ([see the demo](https://ephemerant.github.io/angularjs-datatables/)) to be quick to load.
 * **Search by data value**, rather than row value, allowing for more in-depth searches while also only showing relevant values in a row.
 * Basic **sorting**
+* **Selectable** rows
 
 ### Planned
 * **Extended sorting**, with built-in support for dates, currency, etc.
