@@ -15,12 +15,16 @@ app.controller('main', function($scope) {
 
   vm.names = [];
 
-  for (var i = 1; i <= 100000; i++)
+  for (var i = 1; i <= 100000; i++) {
+    var d = new Date('1/1/1970');
+    d.setDate(d.getDate() + Math.floor(Math.random()*15000));
     vm.names.push({
       id: i,
       firstName: firstNames.randomElement(),
-      lastName: lastNames.randomElement()
+      lastName: lastNames.randomElement(),
+      dob: d
     });
+  }
 
   // (Optional) Create a selection Set for rows that can be processed by both this app and ngRows
   vm.selected = new Set();

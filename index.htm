@@ -17,6 +17,7 @@
         <thead>
             <tr>
                 <th>ID</th>
+                <th ng-sortable>Birthday</th>
                 <th ng-sortable>First Name</th>
                 <th ng-sortable>Last Name</th>
             </tr>
@@ -24,6 +25,7 @@
         <tbody>
             <tr ng-row>
                 <td>{{row.id}}</td>
+                <td ng-format="Date.prototype.toLocaleDateString">{{row.dob}}</td>
                 <td>{{row.firstName}}</td>
                 <td>{{row.lastName}}</td>
             </tr>

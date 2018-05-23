@@ -7,6 +7,8 @@ angular.module('ngRows', [])
           var vm = $scope;
 
           vm.Math = Math;
+          vm.Date = Date;
+
           vm.selected = vm.ngSelected;
 
           vm.pages = {
@@ -106,7 +108,7 @@ angular.module('ngRows', [])
                 if (vm.pages.search) {
                   var toSearch = Object.keys(row).map(function(key) {
                     var value = row[key];
-                    return value && value.toString().toLowerCase();
+                    return value && typeof value !== 'object' && value.toString().toLowerCase();
                   });
                   var match = true;
 
@@ -159,6 +161,11 @@ angular.module('ngRows', [])
 
             if (col && col.order) {
               vm.sortedRows = vm.ngRows.slice().sort(function(a, b) {
+                // Date sorting
+                if (a[col.key] instanceof Date && b[col.key] instanceof Date)
+                  return col.order * (a[col.key].getTime() - b[col.key].getTime());
+
+                // Other sorting
                 if (col.order === 1) // Ascending
                   if (a[col.key] > b[col.key])
                     return 1;
@@ -242,11 +249,19 @@ angular.module('ngRows', [])
               var sortable = $th.attr('ng-sortable') !== undefined;
 
               if (sortable) {
-                var td = $dataCols[i];
+                var $td = $($dataCols[i]);
                 // Determine if a data key is being used
-                var match = /{{row\.(.*?)}}/.exec(td.innerText);
+                var match = /{{row\.(.*?)}}/.exec($td.text());
 
                 if (match) {
+                  var format = $td.attr('ng-format');
+
+                  // Format the cell?
+                  if (format) {
+                    var formatted = $td.text().replace(/\{\{(.*?)\}\}/g, '{{' + format + '.apply($1)}}');
+                    $td.text(formatted);
+                  }
+
                   var key = match[1];
                   $th.attr('ng-class', '{ sorting: pages.headers[' + i + '].order === 0, ' +
                                          'sorting_asc: pages.headers[' + i + '].order === 1, ' +
