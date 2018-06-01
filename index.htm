@@ -9,25 +9,43 @@
 <script src="app.js"></script>
 
 <body ng-app="app" ng-controller="main" ng-cloak>
-    <div style="padding: 10px; padding-top: 0;">
-        <button class="btn btn-default" ng-click="deleteSelected()" ng-disabled="!selected.size">Delete Selected</button>
-        <button class="btn btn-default" ng-click="deselectAll()" ng-disabled="!selected.size">Deselect All</button>
+    <div style="padding: 10px 15px; padding-top: 0;">
+        <label style="font-weight: normal;">
+            Birthday range start:<br>
+            <input type="date" ng-model="filters.startDate" class="form-control">
+        </label>
+        <label style="font-weight: normal;">
+            Birthday range end:<br>
+            <input type="date" ng-model="filters.endDate" class="form-control">
+        </label>
+        <label style="font-weight: normal;">
+            Country:<br>
+            <select ng-model="filters.country" class="form-control">
+                <option value="">All</option>
+                <option ng-repeat="country in countries">{{country}}</option>
+            </select>
+        </label>
     </div>
-    <table class="table table-striped table-bordered dataTable" ng-rows="names" ng-selected="selected">
+    <!-- Note: filteredNames only exists if doing custom filters  -->
+    <table class="table table-striped table-bordered dataTable" ng-rows="filteredNames" ng-selected="selected">
         <thead>
             <tr>
-                <th>ID</th>
+                <th ng-sortable>ID</th>
                 <th ng-sortable>Birthday</th>
                 <th ng-sortable>First Name</th>
                 <th ng-sortable>Last Name</th>
+                <th ng-sortable>Country</th>
+                <th ng-sortable>Net Worth</th>
             </tr>
         </thead>
         <tbody>
             <tr ng-row>
                 <td>{{row.id}}</td>
-                <td ng-format="Date.prototype.toLocaleDateString">{{row.dob}}</td>
+                <td>{{row.birthday | date}}</td>
                 <td>{{row.firstName}}</td>
                 <td>{{row.lastName}}</td>
+                <td>{{row.country}}</td>
+                <td>{{row.netWorth | currency}}</td>
             </tr>
         </tbody>
     </table>

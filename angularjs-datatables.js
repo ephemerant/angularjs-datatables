@@ -251,17 +251,9 @@ angular.module('ngRows', [])
               if (sortable) {
                 var $td = $($dataCols[i]);
                 // Determine if a data key is being used
-                var match = /{{row\.(.*?)}}/.exec($td.text());
+                var match = /{{row\.(.*?)(?:\s.*?)?}}/.exec($td.text());
 
                 if (match) {
-                  var format = $td.attr('ng-format');
-
-                  // Format the cell?
-                  if (format) {
-                    var formatted = $td.text().replace(/\{\{(.*?)\}\}/g, '{{' + format + '.apply($1)}}');
-                    $td.text(formatted);
-                  }
-
                   var key = match[1];
                   $th.attr('ng-class', '{ sorting: pages.headers[' + i + '].order === 0, ' +
                                          'sorting_asc: pages.headers[' + i + '].order === 1, ' +
