@@ -61,12 +61,15 @@
         <tbody>
             <tr ng-row>
                 <td>{{row.id}}</td>
-                <td>{{row.birthday | date}}</td>
+                <td>{{row.birthday | date : 'shortDate'}}</td>
                 <td>{{row.firstName}}</td>
                 <td>{{row.lastName}}</td>
                 <td>{{row.country}}</td>
-                <td>{{row.netWorth | customCurrency}}</td>
-                <td ng-bind-html="row.marked | checkmark" style="text-align: center;"></td>
+                <td>{{row.netWorth | customCurrency}}</td>  
+                <td ng-data="row.marked" style="text-align: center">
+                  <i class="fas fa-2x" ng-class="{'fa-toggle-on': row.marked, 'fa-toggle-off': !row.marked}" ng-click="row.marked=!row.marked"></i>
+                </td>
+                
             </tr>
         </tbody>
     </table>
