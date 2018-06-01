@@ -65,7 +65,7 @@
                 <td>{{row.firstName}}</td>
                 <td>{{row.lastName}}</td>
                 <td>{{row.country}}</td>
-                <td>{{row.netWorth | currency}}</td>
+                <td>{{row.netWorth | customCurrency}}</td>
                 <td ng-bind-html="row.marked | checkmark" style="text-align: center;"></td>
             </tr>
         </tbody>

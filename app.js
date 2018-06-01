@@ -86,6 +86,21 @@ app.filter('checkmark', function($sce) {
   };
 });
 
+// puts parentheses around negative amounts of currency
+app.filter('customCurrency', function ($filter) {
+  return function(amount){
+     var currency = $filter('currency');         
+
+     if(amount && amount.toString().charAt(0) === '-'){
+        return currency(amount.toString())
+          .replace('-', '(')
+          .concat(')'); 
+     }
+
+     return currency(amount);
+  };  
+});
+
 // Return a random element from an array
 Array.prototype.randomElement = function() {
   return this[Math.floor(Math.random() * this.length)];
