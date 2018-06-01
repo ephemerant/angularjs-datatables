@@ -1,4 +1,7 @@
 <link href="https://cdn.datatables.net/r/bs-3.3.5/jq-2.1.4,dt-1.10.8/datatables.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.13/css/all.css" integrity="sha384-DNOHZ68U8hZfKXOrtjWvjxusGo9WQnrNx2sqG0tfsghAvtVlRW3tvkXWZh58N9jp"
+    crossorigin="anonymous">
+
 <link href="angularjs-datatables.css" rel="stylesheet">
 <link href="style.css" rel="stylesheet">
 
@@ -9,6 +12,14 @@
 <script src="app.js"></script>
 
 <body ng-app="app" ng-controller="main" ng-cloak>
+    <div style="padding: 10px; padding-top: 0;">
+        <button class="btn btn-default" ng-click="markSelected()" ng-disabled="!selected.size">
+            Mark Selected
+        </button>
+        <button class="btn btn-default" ng-click="deleteSelected()" ng-disabled="!selected.size">
+            Delete Selected
+        </button>
+    </div>
     <div style="padding: 10px 15px; padding-top: 0;">
         <label style="font-weight: normal;">
             Birthday range start:<br>
@@ -25,6 +36,14 @@
                 <option ng-repeat="country in countries">{{country}}</option>
             </select>
         </label>
+        <label style="font-weight: normal;">
+            Marked:<br>
+            <select ng-model="filters.marked" class="form-control">
+                <option value="">All</option>
+                <option>Marked</option>
+                <option>Unmarked</option>
+            </select>
+        </label>
     </div>
     <!-- Note: filteredNames only exists if doing custom filters  -->
     <table class="table table-striped table-bordered dataTable" ng-rows="filteredNames" ng-selected="selected">
@@ -36,6 +55,7 @@
                 <th ng-sortable>Last Name</th>
                 <th ng-sortable>Country</th>
                 <th ng-sortable>Net Worth</th>
+                <th ng-sortable>Marked</th>
             </tr>
         </thead>
         <tbody>
@@ -46,6 +66,7 @@
                 <td>{{row.lastName}}</td>
                 <td>{{row.country}}</td>
                 <td>{{row.netWorth | currency}}</td>
+                <td ng-bind-html="row.marked | checkmark" style="text-align: center;"></td>
             </tr>
         </tbody>
     </table>

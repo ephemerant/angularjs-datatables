@@ -253,6 +253,9 @@ angular.module('ngRows', [])
                 // Determine if a data key is being used
                 var match = /{{row\.(.*?)(?:\s.*?)?}}/.exec($td.text());
 
+                if (!match && $td.attr('ng-bind-html')) // If no match, see if we're using ng-bind-html
+                  match = /row\.(.*?)(?:\s.*?)?$/.exec($td.attr('ng-bind-html'));
+
                 if (match) {
                   var key = match[1];
                   $th.attr('ng-class', '{ sorting: pages.headers[' + i + '].order === 0, ' +

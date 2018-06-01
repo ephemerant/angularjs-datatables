@@ -1,0 +1,29 @@
+<link href="https://cdn.datatables.net/r/bs-3.3.5/jq-2.1.4,dt-1.10.8/datatables.min.css" rel="stylesheet">
+
+<link href="angularjs-datatables.css" rel="stylesheet">
+<link href="style.css" rel="stylesheet">
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.6.5/angular.min.js" integrity="sha256-zBy1l2WBAh2vPF8rnjFMUXujsfkKjya0Jy5j6yKj0+Q="
+    crossorigin="anonymous"></script>
+
+<script src="angularjs-datatables.js"></script>
+<script src="app.simple.js"></script>
+
+<body ng-app="app" ng-controller="main" ng-cloak>
+    <table class="table table-striped table-bordered dataTable" ng-rows="names">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th ng-sortable>First Name</th>
+                <th ng-sortable>Last Name</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr ng-row>
+                <td>{{row.id}}</td>
+                <td>{{row.firstName}}</td>
+                <td>{{row.lastName}}</td>
+            </tr>
+        </tbody>
+    </table>
+</body>

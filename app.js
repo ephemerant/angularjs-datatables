@@ -14,6 +14,7 @@ app.controller('main', function($scope) {
   var lastNames = ['Adams', 'Brown', 'Blevins', 'Clayton', 'Dixon', 'Edwards', 'Fitzgerald', 'Gray', 'Greene', 'Harris', 'Ibanez', 'Jensen', 'Jefferson', 'Johnson', 'Kennedy', 'Lewis', 'Lincoln', 'Martin', 'McGuire', 'Motz', 'Meyer', 'Newton', 'Penn', 'Richards', 'Russell', 'Smith', 'Stevens', 'Sweet', 'Turner', 'Thompson', 'Vick', 'Waters', 'White', 'Woods'];
   vm.countries = ['United States', 'Canada', 'Mexico'];
 
+  // Array of row objects to display in the table
   vm.names = [];
 
   for (var i = 1; i <= 100000; i++) {
@@ -25,21 +26,43 @@ app.controller('main', function($scope) {
       lastName: lastNames.randomElement(),
       birthday: d,
       country: vm.countries.randomElement(),
-      netWorth: Math.floor(Math.random() * 10000000) / 100 - 10000
+      netWorth: Math.floor(Math.random() * 10000000) / 100 - 10000,
+      marked: false
     });
   }
 
-  // (Optional) Create a selection Set for rows that can be processed by both this app and ngRows
+  // ------------------------------------
+  // NOTE: Everything below is optional
+  // ------------------------------------
+
+  // Create a selection Set for rows that can be processed by both this app and ngRows
   vm.selected = new Set(); 
 
-  // (Optional) Create custom filter methods
+  // Manipulate selection set
+  vm.markSelected = function() {
+    vm.selected.forEach(function(x) { x.marked = true; })
+    vm.selected.clear();
+    customerFilter(); // Trigger a re-sort in case we're sorting by marked
+  };
+
+  vm.deleteSelected = function() {
+    vm.names = vm.names.filter(function(x) {
+      return !vm.selected.has(x);
+    });
+    vm.selected.clear();
+  };
+
+  // Create custom filter methods
   vm.filters = {
     startDate: new Date('1/11/1970'), // date range to filter birthdays by
     endDate: new Date('1/11/2011'),
-    country: undefined
+    country: undefined,
+    marked: undefined
   };
 
-  vm.$watch('filters', function() {
+  vm.$watch('[names.length, filters]', customerFilter, true);
+
+  function customerFilter() {
     vm.filteredNames = vm.names;
 
     if (vm.filters.startDate)
@@ -50,14 +73,20 @@ app.controller('main', function($scope) {
 
     if (vm.filters.country)
       vm.filteredNames = vm.filteredNames.filter(function(x) { return x.country === vm.filters.country });
-  }, true);
+
+    if (vm.filters.marked)
+    vm.filteredNames = vm.filteredNames.filter(function(x) { return x.marked === ('Marked' == vm.filters.marked) });
+  }
 });
 
+app.filter('checkmark', function($sce) {
+  return function(input) {
+    if (input)
+      return $sce.trustAsHtml('<i class="fas fa-check" style="color: #0b0;"></i>');
+  };
+});
+
+// Return a random element from an array
 Array.prototype.randomElement = function() {
   return this[Math.floor(Math.random() * this.length)];
 };
-
-// (Optional) Format currency
-Number.prototype.formatCurrency = function() {
-  return '$' + this;
-}
