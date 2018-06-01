@@ -56,17 +56,19 @@
                 <th ng-sortable>Country</th>
                 <th ng-sortable>Net Worth</th>
                 <th ng-sortable>Marked</th>
+                <th></th>
             </tr>
         </thead>
         <tbody>
             <tr ng-row>
                 <td>{{row.id}}</td>
-                <td>{{row.birthday | date}}</td>
+                <td>{{row.birthday | date : 'shortDate'}}</td>
                 <td>{{row.firstName}}</td>
                 <td>{{row.lastName}}</td>
                 <td>{{row.country}}</td>
-                <td>{{row.netWorth | customCurrency}}</td>
+                <td>{{row.netWorth | customCurrency}}</td>  
                 <td ng-bind-html="row.marked | checkmark" style="text-align: center;"></td>
+                <td><button class="btn btn-default" ng-click="row.marked=true">Mark</button></td>
             </tr>
         </tbody>
     </table>
