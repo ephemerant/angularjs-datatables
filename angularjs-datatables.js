@@ -251,7 +251,10 @@ angular.module('ngRows', [])
               if (sortable) {
                 var $td = $($dataCols[i]);
                 // Determine if a data key is being used
-                var match = /{{row\.(.*?)(?:\s.*?)?}}/.exec($td.text());
+                if ($td.attr('ng-data')) // If no match, see if we're using ng-data
+                  match = /row\.(.*?)(?:\s.*?)?$/.exec($td.attr('ng-data'));
+                else 
+                  match = /{{row\.(.*?)(?:\s.*?)?}}/.exec($td.text());
 
                 if (!match && $td.attr('ng-bind-html')) // If no match, see if we're using ng-bind-html
                   match = /row\.(.*?)(?:\s.*?)?$/.exec($td.attr('ng-bind-html'));

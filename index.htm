@@ -56,7 +56,6 @@
                 <th ng-sortable>Country</th>
                 <th ng-sortable>Net Worth</th>
                 <th ng-sortable>Marked</th>
-                <th></th>
             </tr>
         </thead>
         <tbody>
@@ -67,8 +66,10 @@
                 <td>{{row.lastName}}</td>
                 <td>{{row.country}}</td>
                 <td>{{row.netWorth | customCurrency}}</td>  
-                <td ng-bind-html="row.marked | checkmark" style="text-align: center;"></td>
-                <td><button class="btn btn-default" ng-click="row.marked=true">Mark</button></td>
+                <td ng-data="row.marked" style="text-align: center">
+                  <i class="fas fa-2x" ng-class="{'fa-toggle-on': row.marked, 'fa-toggle-off': !row.marked}" ng-click="row.marked=!row.marked"></i>
+                </td>
+                
             </tr>
         </tbody>
     </table>
