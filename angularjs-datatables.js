@@ -24,6 +24,9 @@ angular.module('ngRows', [])
 
           vm.pages.size = vm.pages.sizes[0];
 
+          // TODO: Temporary, until parent functions can be seamlessly imported
+          vm.ctrl = vm.$parent;
+
           // Row selection
           vm.toggleSelect = function(row) {
             if (!vm.isSelected(row))

@@ -5,6 +5,19 @@
 <link href="angularjs-datatables.css" rel="stylesheet">
 <link href="style.css" rel="stylesheet">
 
+<style>
+    .check-toggle {
+        cursor: pointer;
+        color: #555;
+    }
+    .selected .check-toggle {
+        color: white;
+    }
+    .check-toggle.fa-check-circle {
+        color: #090;
+    }
+</style>
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.6.5/angular.min.js" integrity="sha256-zBy1l2WBAh2vPF8rnjFMUXujsfkKjya0Jy5j6yKj0+Q="
     crossorigin="anonymous"></script>
 
@@ -65,11 +78,10 @@
                 <td>{{row.firstName}}</td>
                 <td>{{row.lastName}}</td>
                 <td>{{row.country}}</td>
-                <td>{{row.netWorth | customCurrency}}</td>  
-                <td ng-data="row.marked" style="text-align: center">
-                  <i class="fas fa-2x" ng-class="{'fa-toggle-on': row.marked, 'fa-toggle-off': !row.marked}" ng-click="row.marked=!row.marked"></i>
+                <td ng-click="markSelected()">{{row.netWorth | customCurrency}}</td>  
+                <td ng-data="row.marked" style="text-align: center" ng-click="ctrl.mark(row)"> <!-- ctrl refers to the controller defined in app.js -->
+                  <i class="far fa-2x check-toggle" ng-class="{'fa-check-circle': row.marked, 'fa-circle': !row.marked}"></i>
                 </td>
-                
             </tr>
         </tbody>
     </table>

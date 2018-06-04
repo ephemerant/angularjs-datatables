@@ -38,11 +38,19 @@ app.controller('main', function($scope) {
   // Create a selection Set for rows that can be processed by both this app and ngRows
   vm.selected = new Set(); 
 
+  // Manipulate a single row
+  vm.mark = function(row) {
+    console.log(row);
+    row.marked = !row.marked;
+    vm.selected.clear();
+    customerFilter(); // Refilter in case we're sorting/filtering by marked
+  }
+
   // Manipulate selection set
   vm.markSelected = function() {
     vm.selected.forEach(function(x) { x.marked = true; })
     vm.selected.clear();
-    customerFilter(); // Trigger a re-sort in case we're sorting by marked
+    customerFilter(); // Refilter in case we're sorting/filtering by marked
   };
 
   vm.deleteSelected = function() {
