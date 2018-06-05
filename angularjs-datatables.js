@@ -241,8 +241,8 @@ angular.module('ngRows', [])
         // Add all of the datatable goodies to the table
         return function (vm, parent) {
           // Grab and clear the table's HTML to re-inject later
-          var $contents = $(row.html());
-          row.html('');
+          var $contents = $(parent.html());
+          parent.html('');
 
           // Repeat rows
           var $headerRow = find($contents, 'thead tr');
