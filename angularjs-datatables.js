@@ -26,10 +26,11 @@ angular.module('ngRows', [])
 
         // Access parent scope functions
         Object.keys(vm.$parent).forEach(function (key) {
-          var value = vm.$parent[key];
-
-          if (typeof value === 'function')
-            vm[key] = vm[key] || value;
+          if (vm[key] === undefined && key.indexOf('$$') === -1) { // Don't overwrite or import special Angular properties
+            Object.defineProperty(vm, key, {
+              get: function() { return vm.$parent[key] }
+            });
+          }
         });
 
         // Row selection
