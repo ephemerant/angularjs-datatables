@@ -6,7 +6,7 @@ app.config(['$compileProvider', function ($compileProvider) {
 }]);
 
 // Controller
-app.controller('main', function($scope) {
+app.controller('main', function ($scope) {
   var vm = $scope;
 
   // Generate random name data for testing
@@ -19,7 +19,7 @@ app.controller('main', function($scope) {
 
   for (var i = 1; i <= 100000; i++) {
     var d = new Date('1/1/1970');
-    d.setDate(d.getDate() + Math.floor(Math.random()*15000));
+    d.setDate(d.getDate() + Math.floor(Math.random() * 15000));
     vm.names.push({
       id: i,
       firstName: firstNames.randomElement(),
@@ -36,25 +36,24 @@ app.controller('main', function($scope) {
   // ------------------------------------
 
   // Create a selection Set for rows that can be processed by both this app and ngRows
-  vm.selected = new Set(); 
+  vm.selected = new Set();
 
   // Manipulate a single row
-  vm.mark = function(row) {
-    console.log(row);
+  vm.mark = function (row) {
     row.marked = !row.marked;
     vm.selected.clear();
     customerFilter(); // Refilter in case we're sorting/filtering by marked
   }
 
   // Manipulate selection set
-  vm.markSelected = function() {
-    vm.selected.forEach(function(x) { x.marked = true; })
+  vm.markSelected = function () {
+    vm.selected.forEach(function (x) { x.marked = true; })
     vm.selected.clear();
     customerFilter(); // Refilter in case we're sorting/filtering by marked
   };
 
-  vm.deleteSelected = function() {
-    vm.names = vm.names.filter(function(x) {
+  vm.deleteSelected = function () {
+    vm.names = vm.names.filter(function (x) {
       return !vm.selected.has(x);
     });
     vm.selected.clear();
@@ -74,21 +73,21 @@ app.controller('main', function($scope) {
     vm.filteredNames = vm.names;
 
     if (vm.filters.startDate)
-      vm.filteredNames = vm.filteredNames.filter(function(x) { return x.birthday >= vm.filters.startDate });
+      vm.filteredNames = vm.filteredNames.filter(function (x) { return x.birthday >= vm.filters.startDate });
 
     if (vm.filters.endDate)
-      vm.filteredNames = vm.filteredNames.filter(function(x) { return x.birthday <= vm.filters.endDate });
+      vm.filteredNames = vm.filteredNames.filter(function (x) { return x.birthday <= vm.filters.endDate });
 
     if (vm.filters.country)
-      vm.filteredNames = vm.filteredNames.filter(function(x) { return x.country === vm.filters.country });
+      vm.filteredNames = vm.filteredNames.filter(function (x) { return x.country === vm.filters.country });
 
     if (vm.filters.marked)
-    vm.filteredNames = vm.filteredNames.filter(function(x) { return x.marked === ('Marked' == vm.filters.marked) });
+      vm.filteredNames = vm.filteredNames.filter(function (x) { return x.marked === ('Marked' == vm.filters.marked) });
   }
 });
 
-app.filter('checkmark', function($sce) {
-  return function(input) {
+app.filter('checkmark', function ($sce) {
+  return function (input) {
     if (input)
       return $sce.trustAsHtml('<i class="fas fa-check" style="color: #0b0;"></i>');
   };
@@ -96,20 +95,20 @@ app.filter('checkmark', function($sce) {
 
 // puts parentheses around negative amounts of currency
 app.filter('customCurrency', function ($filter) {
-  return function(amount){
-     var currency = $filter('currency');         
+  return function (amount) {
+    var currency = $filter('currency');
 
-     if(amount && amount.toString().charAt(0) === '-'){
-        return currency(amount.toString())
-          .replace('-', '(')
-          .concat(')'); 
-     }
+    if (amount && amount.toString().charAt(0) === '-') {
+      return currency(amount.toString())
+        .replace('-', '(')
+        .concat(')');
+    }
 
-     return currency(amount);
-  };  
+    return currency(amount);
+  };
 });
 
 // Return a random element from an array
-Array.prototype.randomElement = function() {
+Array.prototype.randomElement = function () {
   return this[Math.floor(Math.random() * this.length)];
 };

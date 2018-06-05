@@ -10,9 +10,11 @@
         cursor: pointer;
         color: #555;
     }
+
     .selected .check-toggle {
         color: white;
     }
+
     .check-toggle.fa-check-circle {
         color: #090;
     }
@@ -35,22 +37,26 @@
     </div>
     <div style="padding: 10px 15px; padding-top: 0;">
         <label style="font-weight: normal;">
-            Birthday range start:<br>
+            Birthday range start:
+            <br>
             <input type="date" ng-model="filters.startDate" class="form-control">
         </label>
         <label style="font-weight: normal;">
-            Birthday range end:<br>
+            Birthday range end:
+            <br>
             <input type="date" ng-model="filters.endDate" class="form-control">
         </label>
         <label style="font-weight: normal;">
-            Country:<br>
+            Country:
+            <br>
             <select ng-model="filters.country" class="form-control">
                 <option value="">All</option>
                 <option ng-repeat="country in countries">{{country}}</option>
             </select>
         </label>
         <label style="font-weight: normal;">
-            Marked:<br>
+            Marked:
+            <br>
             <select ng-model="filters.marked" class="form-control">
                 <option value="">All</option>
                 <option>Marked</option>
@@ -78,9 +84,10 @@
                 <td>{{row.firstName}}</td>
                 <td>{{row.lastName}}</td>
                 <td>{{row.country}}</td>
-                <td ng-click="markSelected()">{{row.netWorth | customCurrency}}</td>  
-                <td ng-data="row.marked" style="text-align: center" ng-click="ctrl.mark(row)"> <!-- ctrl refers to the controller defined in app.js -->
-                  <i class="far fa-2x check-toggle" ng-class="{'fa-check-circle': row.marked, 'fa-circle': !row.marked}"></i>
+                <td ng-click="markSelected()">{{row.netWorth | customCurrency}}</td>
+                <td ng-data="row.marked" style="text-align: center" ng-click="mark(row)">
+                    <!-- ctrl refers to the controller defined in app.js -->
+                    <i class="far fa-2x check-toggle" ng-class="{'fa-check-circle': row.marked, 'fa-circle': !row.marked}"></i>
                 </td>
             </tr>
         </tbody>
