@@ -24,15 +24,6 @@ angular.module('ngRows', [])
 
         vm.pages.size = vm.pages.sizes[0];
 
-        // Access parent scope functions
-        Object.keys(vm.$parent).forEach(function (key) {
-          if (vm[key] === undefined && key.indexOf('$$') === -1) { // Don't overwrite or import special Angular properties
-            Object.defineProperty(vm, key, {
-              get: function() { return vm.$parent[key] }
-            });
-          }
-        });
-
         // Row selection
         vm.toggleSelect = function (row) {
           if (!vm.isSelected(row))
@@ -206,6 +197,23 @@ angular.module('ngRows', [])
         vm.$watch('ngRows', function () {
           sortRows();
         });
+
+        // Access ancestor scope functions
+        var ancestor = vm.$parent;
+        
+        while (ancestor) {
+          Object.keys(ancestor).forEach(function (key) {
+            if (vm[key] === undefined && key.indexOf('$') === -1) { // Don't overwrite or import special Angular properties              
+              var $ancestor = ancestor;
+              
+              Object.defineProperty(vm, key, {
+                get: function() { return $ancestor[key] }
+              });
+            }
+          });
+          
+          ancestor = ancestor.$parent;
+        }
       },
       compile: function (row) {
         var $ = angular.element;
