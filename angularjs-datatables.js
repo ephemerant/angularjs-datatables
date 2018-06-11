@@ -273,12 +273,12 @@ angular.module('ngRows', [])
               var $td = $($dataCols[i]);
               // Determine if a data key is being used
               if ($td.attr('ng-data')) // If no match, see if we're using ng-data
-                match = new Regex(rowName + '\.(.*?)(?:\s.*?)?$').exec($td.attr('ng-data'));
+                match = new RegExp(rowName + '\.(.*?)(?:\s.*?)?$').exec($td.attr('ng-data'));
               else
-                match = new Regex('{{' + rowName + '\.(.*?)(?:\s.*?)?}}').exec($td.text());
+                match = new RegExp('{{' + rowName + '\.(.*?)(?:\s.*?)?}}').exec($td.text());
 
               if (!match && $td.attr('ng-bind-html')) // If no match, see if we're using ng-bind-html
-                match = new Regex(rowName + '\.(.*?)(?:\s.*?)?$').exec($td.attr('ng-bind-html'));
+                match = new RegExp(rowName + '\.(.*?)(?:\s.*?)?$').exec($td.attr('ng-bind-html'));
 
               if (match) {
                 var key = match[1];
@@ -296,7 +296,7 @@ angular.module('ngRows', [])
             $dataRow
               .prepend('<td ng-selectable ng-click="toggleSelect(' + rowName + ')""></td>')
               .attr('ng-selectable', null)
-              .attr('ng-class', ($dataRow.attr('ng-class') + '{ selected: isSelected(' + rowName + ') }').replace('}{', ','));
+              .attr('ng-class', (($dataRow.attr('ng-class') || '') + '{ selected: isSelected(' + rowName + ') }').replace('}{', ','));
             $headerRow.prepend('<td ng-selectable ng-click="toggleSelectAll(filteredRows)" ng-class="{ selected: filteredRows.length && allSelected(filteredRows) }"></td>');
           }
 
