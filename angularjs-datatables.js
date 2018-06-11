@@ -197,7 +197,7 @@ angular.module('ngRows', [])
         vm.$watch('ngRows', function () {
           sortRows();
         });
-
+        
         // Access ancestor scope functions
         var ancestor = vm.$parent;
         
@@ -250,12 +250,16 @@ angular.module('ngRows', [])
         return function (vm, parent) {
           // Grab and clear the table's HTML to re-inject later
           var $contents = $(parent.html());
+          
           parent.html('');
 
           // Repeat rows
           var $headerRow = find($contents, 'thead tr');
           var $dataRow = find($contents, 'tr[ng-row]');
-          $dataRow.attr('ng-repeat', 'row in getPageRows(filteredRows) track by $index');
+          
+          var rowName = $dataRow.attr('ng-row') || 'row';
+          
+          $dataRow.attr('ng-repeat', rowName + ' in getPageRows(filteredRows) track by $index');
 
           // Sortable columns
           var $headerCols = find($headerRow, 'th');
@@ -269,12 +273,12 @@ angular.module('ngRows', [])
               var $td = $($dataCols[i]);
               // Determine if a data key is being used
               if ($td.attr('ng-data')) // If no match, see if we're using ng-data
-                match = /row\.(.*?)(?:\s.*?)?$/.exec($td.attr('ng-data'));
+                match = new Regex(rowName + '\.(.*?)(?:\s.*?)?$').exec($td.attr('ng-data'));
               else
-                match = /{{row\.(.*?)(?:\s.*?)?}}/.exec($td.text());
+                match = new Regex('{{' + rowName + '\.(.*?)(?:\s.*?)?}}').exec($td.text());
 
               if (!match && $td.attr('ng-bind-html')) // If no match, see if we're using ng-bind-html
-                match = /row\.(.*?)(?:\s.*?)?$/.exec($td.attr('ng-bind-html'));
+                match = new Regex(rowName + '\.(.*?)(?:\s.*?)?$').exec($td.attr('ng-bind-html'));
 
               if (match) {
                 var key = match[1];
@@ -290,9 +294,9 @@ angular.module('ngRows', [])
           // Do we want the row to be selectable?
           if (parent.attr('ng-selected') !== undefined) {
             $dataRow
-              .prepend('<td ng-selectable ng-click="toggleSelect(row)""></td>')
+              .prepend('<td ng-selectable ng-click="toggleSelect(' + rowName + ')""></td>')
               .attr('ng-selectable', null)
-              .attr('ng-class', '{ selected: isSelected(row) }');
+              .attr('ng-class', ($dataRow.attr('ng-class') + '{ selected: isSelected(' + rowName + ') }').replace('}{', ','));
             $headerRow.prepend('<td ng-selectable ng-click="toggleSelectAll(filteredRows)" ng-class="{ selected: filteredRows.length && allSelected(filteredRows) }"></td>');
           }
 
