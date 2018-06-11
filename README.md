@@ -20,7 +20,7 @@ Given an array of data objects in your controller's scope (called "names" in thi
 
 Optionally, you can make rows selectable by doing the following:
 * Create an empty Set in your controllers's scope (called "selectable" in this example).
-* Add **ng-selectable="selectable"** to the **\<table/\>**.
+* Add **ng-selected="selectable"** to the **\<table/\>**.
 
 ### Simple example
 ```html
