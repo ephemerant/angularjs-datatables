@@ -269,17 +269,18 @@ angular.module('ngRows', [])
             var $th = $(el);
             var sortable = $th.attr('ng-sortable') !== undefined;
 
-            if (sortable) {
+            if (sortable) {              
               var $td = $($dataCols[i]);
+              
               // Determine if a data key is being used
               if ($td.attr('ng-data')) // If no match, see if we're using ng-data
-                match = new RegExp(rowName + '\.(.*?)(?:\s.*?)?$').exec($td.attr('ng-data'));
+                match = new RegExp(rowName + '\\.(.*?)(?:\\s.*?)?$').exec($td.attr('ng-data'));
               else
-                match = new RegExp('{{' + rowName + '\.(.*?)(?:\s.*?)?}}').exec($td.text());
+                match = new RegExp('{{' + rowName + '\\.(.*?)(?:\\s.*?)?}}').exec($td.text());
 
               if (!match && $td.attr('ng-bind-html')) // If no match, see if we're using ng-bind-html
-                match = new RegExp(rowName + '\.(.*?)(?:\s.*?)?$').exec($td.attr('ng-bind-html'));
-
+                match = new RegExp(rowName + '\\.(.*?)(?:\\s.*?)?$').exec($td.attr('ng-bind-html'));
+              
               if (match) {
                 var key = match[1];
                 $th.attr('ng-class', '{ sorting: pages.headers[' + i + '].order === 0, ' +
