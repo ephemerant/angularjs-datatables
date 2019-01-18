@@ -2,7 +2,7 @@
 A simple, lightweight wrapper for interacting with data via AngularJS as a datatable.
 
 * [Full demo](https://ephemerant.github.io/angularjs-datatables/)
-* [Simple demo](https://ephemerant.github.io/angularjs-datatables/index.simple.html)
+* [Simple demo](https://ephemerant.github.io/angularjs-datatables/index.simple.htm)
 
 ## Features
 * **Virtual pagination**, allowing for rows to only be rendered as they are needed. This allows for tables of even 100,000 rows ([see the demo](https://ephemerant.github.io/angularjs-datatables/)) to be quick to load.
